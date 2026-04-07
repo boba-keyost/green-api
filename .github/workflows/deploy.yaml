@@ -28,7 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@test-task
+        uses: actions/checkout@v6
+        with:
+          ref: test-task
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
