@@ -1,0 +1,94 @@
+diff --git a/node_modules/postcss-prefixer/lib/prefixer.js b/node_modules/postcss-prefixer/lib/prefixer.js
+index ced626f..0d050db 100644
+--- a/node_modules/postcss-prefixer/lib/prefixer.js
++++ b/node_modules/postcss-prefixer/lib/prefixer.js
+@@ -32,23 +32,35 @@ const prefixNode = (node, prefix) => {
+   return node;
+ };
+ 
+-const interateSelectorNodes = (selector, options) => Object.assign({}, selector, {
+-  nodes: selector.nodes.map((node) => {
+-    if (['selector', 'nested-pseudo-class'].includes(node.type)) {
+-      return interateSelectorNodes(node, options);
+-    }
+-
+-    if (itMatchesOne(options.ignore, Tokenizer.stringify(node))) return node;
+-
+-    return prefixNode(node, options.prefix);
+-  }),
+-});
++const interateSelectorNodes = (selector, options) => {
++  let ignoreStop = false;
++  return Object.assign({}, selector, {
++    nodes: selector.nodes.map((node) => {
++      if (['selector', 'nested-pseudo-class'].includes(node.type)) {
++        const nodeIterated = interateSelectorNodes(node, options);
++        ignoreStop = nodeIterated.ignoreStop;
++        return nodeIterated;
++      }
++
++      if (itMatchesOne(options.ignore, Tokenizer.stringify(node))) return node;
++      if (itMatchesOne(options.ignoreAndStop, Tokenizer.stringify(node))) {
++        ignoreStop = true;
++        return node;
++      }
++
++      return !ignoreStop ? prefixNode(node, options.prefix) : node;
++    }),
++    ignoreStop
++  });
++}
+ 
+ 
+ const prefixer = (options) => {
+-  const { prefix, ignore } = Object.assign({}, {
++  const { prefix, ignore , ignoreAndStop, skipFile } = Object.assign({}, {
+     prefix: '',
+     ignore: [],
++    ignoreAndStop: [],
++    skipFile: null,
+   }, options);
+ 
+   if (typeof prefix !== 'string') {
+@@ -59,17 +71,36 @@ const prefixer = (options) => {
+     throw new Error('@postcss-prefix: ignore options should be an Array.');
+   }
+ 
++  if (!Array.isArray(ignoreAndStop)) {
++    throw new Error('@postcss-prefix: ignoreAndStop options should be an Array.');
++  }
++
++  if (skipFile && typeof skipFile !== 'function') {
++    throw new Error('@postcss-prefix: skipFile options should be a Function.');
++  }
++
+   return {
+     postcssPlugin: 'postcss-prefixer',
+     Once(css) {
+       if (!prefix.length) return;
+ 
+-      css.walkRules((rule) => {
+-        const parsed = Tokenizer.parse(rule.selector);
+-        const selector = interateSelectorNodes(parsed, { prefix, ignore });
++      if (skipFile && skipFile(css.source.input.file)) return;
+ 
+-        /* eslint no-param-reassign: "off" */
+-        rule.selector = Tokenizer.stringify(selector);
++      css.walkRules((rule) => {
++        if (rule.parent.ignoreStop) {
++          rule.ignoreStop = rule.parent.ignoreStop;
++        } else {
++          const parsed = Tokenizer.parse(rule.selector);
++          const selector = interateSelectorNodes(parsed, {
++            prefix,
++            ignore,
++            ignoreAndStop
++          });
++
++          /* eslint no-param-reassign: "off" */
++          rule.selector = Tokenizer.stringify(selector);
++          rule.ignoreStop = selector.ignoreStop;
++        }
+       });
+     },
+   };
