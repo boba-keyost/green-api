@@ -18,17 +18,17 @@ const noAttr = () => {
     }
 }
 
-export default defineConfig(({mode, isSsrBuild }) => {
+export default defineConfig(({mode}) => {
     const isDev = mode === "development";
     const env = loadEnv(mode, process.cwd(), "");
     const fileHash = isDev ? "" : ".[hash:10]";
 
     process.env.VITE__PREFIX__ = postCSSConfig?.plugins?.["postcss-prefixer"]?.prefix || "";
     
-    const config = {
+    return {
         clearScreen: true,
         logLevel: "info",
-        base: "",
+        base: env.BASE_PATH || "",
         build: {
             outDir: "dist",
             sourcemap: isDev,
@@ -92,11 +92,4 @@ export default defineConfig(({mode, isSsrBuild }) => {
             sourcemapIgnoreList: sourcePath => sourcePath.includes("node_modules/.vite"),
         },
     }
-    
-    if (isSsrBuild) {
-        config.build.outDir += "/server"
-        config.build.copyPublicDir = false
-    }
-
-    return config
 });
