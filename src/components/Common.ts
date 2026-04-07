@@ -1,9 +1,11 @@
 export default class Common{
     protected container: HTMLElement
-    protected initialised: boolean
+    protected initialised: boolean = false
     
     constructor(container: HTMLElement) {
+        this.initialised = false
         this.container = container
+        this.init()
     }
     
     init() {
@@ -11,9 +13,5 @@ export default class Common{
             throw new Error('Container not defined')
         }
         this.initialised = true
-    }
-    
-    render() {
-        this.init()
     }
 }
