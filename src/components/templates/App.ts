@@ -161,7 +161,7 @@ export default class App extends Component<AppProps, AppState>{
                 "id-instance": this.state.idInstance,
                 "api-token-instance": this.state.apiTokenInstance,
             }
-            history.pushState(params, "", "/?" + queryStringify(params))
+            history.pushState(params, "", "./?" + queryStringify(params))
         }
         const disabled = this.state.loading || !(this.state.apiTokenInstance && this.state.idInstance)
         this.getSettingsForm?.updateState({disabled})
