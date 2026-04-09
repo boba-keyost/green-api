@@ -1,0 +1,11 @@
+.textarea{
+    &[contenteditable]:empty::before{
+        content: attr(data-placeholder);
+        pointer-events: none;
+        display: block;
+    }
+
+    &[contenteditable]:empty::before{
+        color: var(--color-input-placeholder);
+    }
+}
