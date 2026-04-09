@@ -10,7 +10,8 @@
         "preview": "vite preview",
         "type-check": "tsc --noEmit true",
         "test": "vitest",
-        "test:coverage": "vitest run --coverage --watch=false"
+        "test:coverage": "vitest run --coverage --watch=false",
+        "compile": "tsc --noEmit false --allowImportingTsExtensions false --outDir ./build"
     },
     "devDependencies": {
         "@babel/core": "^7.29.0",

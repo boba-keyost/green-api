@@ -6,7 +6,7 @@ import eslint from "vite-plugin-eslint";
 //import {nodePolyfills} from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
 import {abbrStr, getAPIEndpoint} from "./lib";
-import postCSSConfig from "./postcss.config.ts";
+import postCSSConfig from "./postcss.config";
 
 
 const noAttr = () => {
