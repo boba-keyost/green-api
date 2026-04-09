@@ -3,7 +3,7 @@ import {Buffer} from "node:buffer";
 import path from "node:path";
 import {defineConfig, loadEnv} from 'vite';
 import eslint from "vite-plugin-eslint";
-import {nodePolyfills} from "vite-plugin-node-polyfills";
+//import {nodePolyfills} from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
 import {abbrStr, getAPIEndpoint} from "./lib";
 import postCSSConfig from "./postcss.config.ts";
@@ -65,7 +65,7 @@ export default defineConfig(({mode}) => {
             }
         },
         plugins: [
-            nodePolyfills(),
+            //nodePolyfills(),
             eslint({
                 lintOnStart: isDev,
                 failOnWarning: !isDev,
