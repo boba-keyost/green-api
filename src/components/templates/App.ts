@@ -158,8 +158,8 @@ export default class App extends Component<AppProps, AppState>{
     applyState(updateKeys?: (keyof AppState)[]) {
         if (updateKeys && (updateKeys.includes("apiTokenInstance") || updateKeys.includes("idInstance"))) {
             const params = {
-                "id-instance": this.state.idInstance,
-                "api-token-instance": this.state.apiTokenInstance,
+                "id-instance": this.state.idInstance || undefined,
+                "api-token-instance": this.state.apiTokenInstance || undefined,
             }
             history.pushState(params, "", "./?" + queryStringify(params))
         }
